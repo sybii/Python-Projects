@@ -1,3 +1,5 @@
+# Coffee Machine
+
 MENU = {
     "espresso": {
         "ingredients": {
@@ -30,98 +32,144 @@ resources = {
     "coffee": 100,
 }
 
-# defining the variables for use.
-
-# espresso
-espresso_w = MENU["espresso"]["ingredients"]["water"]
-espresso_c = MENU["espresso"]["ingredients"]["coffee"]
-espresso_cost = MENU["espresso"]["cost"]
-
-# latte
-latte_w = MENU["latte"]["ingredients"]["water"]
-latte_c = MENU["latte"]["ingredients"]["coffee"]
-latte_m = MENU["latte"]["ingredients"]["coffee"]
-latte_cost = MENU["latte"]["cost"]
-
-# cappuccino
-capp_w = MENU["cappuccino"]["ingredients"]["water"]
-capp_c = MENU["cappuccino"]["ingredients"]["coffee"]
-capp_m = MENU["cappuccino"]["ingredients"]["milk"]
-capp_cost = MENU["cappuccino"]["cost"]
-
-# MENU
-print(f'''_____MENU_____
-1. Espresso - {espresso_cost}
-2. Latte - {latte_cost}
-3. Cappuccino - {capp_cost}''')
-
-# taking inputs from user
-order = input("What would you like? (espresso / latte / cappuccino): ")
-quarters = int(input("How many quarters? "))
-dime = int(input("How many dimes? "))
-nickles = int(input("How many nickles? "))
-pennies = int(input("How many pennies? "))
-
-# quarters = $0.25
-# dimes    = $0.1
-# nickles  = $0.05
-# pennies  = $0.01
+# initial values
+total_income = 0
 
 
-# functions for beverages
+# defining functions for the drinks
 def espresso():
-    global resources, espresso_w, espresso_c
-    resources['water'] -= espresso_w
-    resources['coffee'] -= espresso_c
+    resources["water"] -= 50
+    resources["coffee"] -= 18
+    print("Enjoy your espresso! ☕")
     return resources
 
 
 def latte():
-    global resources, latte_w, latte_m, latte_c
-    resources['water'] -= latte_w
-    resources['milk'] -= latte_m
-    resources['coffee'] -= latte_c
+    resources["water"] -= 100
+    resources["milk"] -= 150
+    resources["coffee"] -= 24
+    print("Enjoy your latte! ☕")
     return resources
 
 
 def cappuccino():
-    global resources, capp_w, capp_m, capp_c
-    resources['water'] -= capp_w
-    resources['milk'] -= capp_m
-    resources['coffee'] -= capp_c
+    resources["water"] -= 250
+    resources["milk"] -= 100
+    resources["coffee"] -= 24
+    print("Enjoy your cappuccino! ☕")
+    return resources
 
 
-def calculate():
-    global quarters, dime, nickles, pennies
-    q_cal = quarters * 0.25
-    d_cal = dime * 0.1
-    n_cal = nickles * 0.05
-    p_cal = pennies * 0.01
-    payment = q_cal + d_cal + n_cal + p_cal
-    return payment
+def report():
+    global total_income
+    for attribute, value in resources.items():
+        print('{} : {}'.format(attribute, value))
+    print(f"income : ${total_income}")
 
 
-# for payment calculations
-p = calculate()
+def off():
+    print("Shutting down! ⏳")
+    exit()
 
-if order == 'espresso':
-    if p == 1.5:
+
+def calculate(quarter, dime, nickel, pennie):
+    global total_income
+    qs = quarter * 0.25
+    ds = dime * 0.1
+    ns = nickel * 0.05
+    ps = pennie * 0.01
+    total_payment = qs + ds + ns + ps
+    return total_payment
+
+
+def machine():
+    global total_income
+    order = input("What is your order? (espresso, latte, cappuccino): ")
+
+    if order == 'espresso':
+        if resources['water'] <= 50:
+            print("Sorry! not enough Water.")
+            return
+        elif resources['coffee'] <= 18:
+            print("Sorry! not enough Coffee.")
+            return
+        q = int(input("How many quarters: "))
+        d = int(input("How many dimes: "))
+        n = int(input("How many nickels: "))
+        p = int(input("How many pennies: "))
+        tp = calculate(q, d, n, p)
+        if tp >= 1.5:
+            if tp > 1.5:
+                change_e = tp - 1.5
+                tp_e = tp-change_e
+                total_income += tp_e
+                print(f"Here is ${round(change_e, 2)}, your change!")
+        else:
+            print("Transaction unsuccessful, money refunded!")
+            return
         espresso()
-        print('Enjoy your espresso! ☕')
-    else:
-        print('Not enough money! refunded 💵')
-elif order == 'latte':
-    if p == 2.5:
+
+    if order == 'latte':
+        if resources['water'] <= 100:
+            print("Sorry! not enough Water.")
+            return
+        elif resources['milk'] <= 150:
+            print("Sorry! not enough Milk.")
+            return
+        elif resources['coffee'] <= 24:
+            print("Sorry! not enough Coffee.")
+            return
+        q = int(input("How many quarters: "))
+        d = int(input("How many dimes: "))
+        n = int(input("How many nickels: "))
+        p = int(input("How many pennies: "))
+        tp = calculate(q, d, n, p)
+        if tp >= 2.5:
+            if tp > 2.5:
+                change_l = tp - 2.5
+                tp_l = tp - change_l
+                total_income += tp_l
+                print(f"Here is ${round(change_l, 2)}, your change!")
+        else:
+            print("Transaction unsuccessful, money refunded!")
+            return
         latte()
-        print('Enjoy your latte! ☕')
-    else:
-        print('Not enough money! refunded 💵')
-elif order == "cappuccino":
-    if p == 3.0:
+
+    if order == "cappuccino":
+        if resources['water'] <= 250:
+            print("Sorry! not enough Water.")
+            return
+        elif resources['milk'] <= 100:
+            print("Sorry! not enough Milk.")
+            return
+        elif resources['coffee'] <= 24:
+            print("Sorry! not enough Coffee.")
+            return
+        q = int(input("How many quarters: "))
+        d = int(input("How many dimes: "))
+        n = int(input("How many nickels: "))
+        p = int(input("How many pennies: "))
+        tp = calculate(q, d, n, p)
+        if tp >= 3.0:
+            if tp > 3.0:
+                change_c = tp - 3.0
+                tp_c = tp - change_c
+                total_income += tp_c
+                print(f"Here is ${round(change_c, 2)}, your change!")
+        else:
+            print("Transaction unsuccessful, money refunded!")
+            return
         cappuccino()
-        print('Enjoy your cappuccino! ☕')
-    else:
-        print('Not enough money! refunded 💵')
-else:
-    print("sorry, can't make a coffe right now!")
-print(resources)
+
+    if order == "report":
+        report()
+        return
+
+    if order == "off":
+        off()
+
+
+cont = True
+
+while cont:
+    machine()
